@@ -58,14 +58,12 @@ def orders():
                 order.append({'name': item['name'], 'price': item['price'], 'qty': qty, 'img': item['img']})
                 total += item['price'] * qty
         if order:
-            payment = request.form.get('payment', 'Tiền mặt')
-            paid = request.form.get('paid', 'no') == 'yes'
             data['orders'].append({
                 'order': order,
                 'total': total,
                 'time': datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-                'payment': payment,
-                'paid': paid
+                'payment': '',
+                'paid': False
             })
             save_data(data)
         return redirect(url_for('bills'))
@@ -83,12 +81,11 @@ def bill_detail(bill_id):
         return "Không tìm thấy bill", 404
     bill = data['orders'][bill_id]
     if request.method == 'POST':
-        # Sửa bill
+        # Sửa bill: cập nhật số lượng và trạng thái thanh toán
         for i, it in enumerate(bill['order']):
             qty = int(request.form.get(f'qty_{i}', it['qty']))
             bill['order'][i]['qty'] = qty
         bill['total'] = sum(it['price'] * it['qty'] for it in bill['order'])
-        bill['payment'] = request.form.get('payment', bill['payment'])
         bill['paid'] = request.form.get('paid', 'no') == 'yes'
         bill['time'] = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         save_data(data)
