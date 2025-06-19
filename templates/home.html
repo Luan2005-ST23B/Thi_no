@@ -5,14 +5,27 @@
     <title>Trang chủ quản lý bán hàng</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-top: 32px;
+        }
+        @media (min-width: 500px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>Quản lý bán hàng</h1>
-    <a href="/items" class="top-btn">Quản lý mặt hàng</a>
-    <a href="/orders" class="top-btn">Tạo đơn hàng mới</a>
-    <a href="/bills" class="top-btn">Xem danh sách bill</a>
-    <a href="/stats" class="top-btn">Thống kê</a>
+    <div class="menu-grid">
+        <a href="/items" class="top-btn" style="font-size:20px;">📦 Quản lý mặt hàng</a>
+        <a href="/orders" class="top-btn" style="font-size:20px;">📝 Tạo đơn hàng</a>
+        <a href="/bills" class="top-btn" style="font-size:20px;">📄 Danh sách bill</a>
+        <a href="/stats" class="top-btn" style="font-size:20px;">📊 Thống kê</a>
+    </div>
 </div>
 </body>
 </html>

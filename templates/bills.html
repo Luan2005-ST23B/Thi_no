@@ -15,7 +15,6 @@
             <th>#</th>
             <th>Thời gian</th>
             <th>Tổng tiền</th>
-            <th>Thanh toán</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -24,7 +23,6 @@
             <td>{{ loop.index }}</td>
             <td>{{ o.time }}</td>
             <td>{{ "{:,}".format(o.total) }}đ</td>
-            <td>{{ o.payment }}</td>
             <td>
                 {% if o.paid %}
                     <span style="color:green;font-weight:bold;">Đã thanh toán</span>
@@ -38,7 +36,7 @@
             </td>
         </tr>
         {% else %}
-        <tr><td colspan="6" class="empty">Chưa có bill nào</td></tr>
+        <tr><td colspan="5" class="empty">Chưa có bill nào</td></tr>
         {% endfor %}
     </table>
 </div>

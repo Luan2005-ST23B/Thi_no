@@ -48,11 +48,6 @@
                 {% endfor %}
             </ul>
             <div class="flex-row">
-                <label>Thanh toán:</label>
-                <select name="payment">
-                    <option value="Tiền mặt" {% if bill.payment == "Tiền mặt" %}selected{% endif %}>Tiền mặt</option>
-                    <option value="Chuyển khoản" {% if bill.payment == "Chuyển khoản" %}selected{% endif %}>Chuyển khoản</option>
-                </select>
                 <label>
                     <input type="checkbox" name="paid" value="yes" {% if bill.paid %}checked{% endif %}> Đã tính tiền
                 </label>

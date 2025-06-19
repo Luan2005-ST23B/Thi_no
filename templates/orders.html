@@ -7,10 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         .item-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 14px;
             margin-bottom: 18px;
         }
         .item-card {
@@ -18,11 +17,12 @@
             border-radius: 14px;
             box-shadow: 0 2px 8px #0001;
             padding: 10px 8px 8px 8px;
-            width: 110px;
             text-align: center;
             cursor: pointer;
             transition: box-shadow 0.2s, transform 0.1s;
             position: relative;
+            min-width: 0;
+            user-select: none;
         }
         .item-card.selected {
             border: 2.5px solid #2ecc71;
@@ -40,6 +40,7 @@
             color: #219150;
             font-size: 15px;
             margin-bottom: 2px;
+            word-break: break-word;
         }
         .item-card .item-price {
             color: #555;
@@ -74,7 +75,8 @@
             background: transparent;
         }
         @media (max-width: 600px) {
-            .item-card { width: 44vw; min-width: 100px; }
+            .item-grid { grid-template-columns: repeat(2, 1fr); }
+            .item-card { padding: 8px 4px 6px 4px; }
             .item-card img { max-width: 44px; max-height: 44px; }
         }
     </style>
@@ -107,7 +109,6 @@ function addToOrder(i) {
     let qtyCtrl = document.getElementById('qtyctrl'+i);
     let qtyInput = document.getElementById('qty'+i);
     if (card.classList.contains('selected')) {
-        // Đã chọn, bỏ chọn
         card.classList.remove('selected');
         qtyCtrl.style.display = 'none';
         qtyInput.value = 0;
@@ -130,7 +131,6 @@ function changeQty(i, delta) {
     qtyInput.value = qty;
 }
 document.getElementById('orderForm').onsubmit = function() {
-    // Nếu không chọn mặt hàng nào thì không cho submit
     let hasItem = false;
     {% for item in items %}
     if (parseInt(document.getElementById('qty{{ loop.index0 }}').value) > 0) hasItem = true;
