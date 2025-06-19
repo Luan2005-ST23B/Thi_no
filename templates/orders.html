@@ -74,10 +74,22 @@
             border: none;
             background: transparent;
         }
+        .total-bar {
+            background: #e8f7e4;
+            border-radius: 12px;
+            padding: 14px 10px;
+            margin-bottom: 18px;
+            font-size: 18px;
+            color: #219150;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 2px 8px #0001;
+        }
         @media (max-width: 600px) {
             .item-grid { grid-template-columns: repeat(2, 1fr); }
             .item-card { padding: 8px 4px 6px 4px; }
             .item-card img { max-width: 44px; max-height: 44px; }
+            .total-bar { font-size: 16px; }
         }
     </style>
 </head>
@@ -87,24 +99,31 @@
     <form method="post" id="orderForm">
         <div class="item-grid">
             {% for item in items %}
-            <div class="item-card" onclick="addToOrder({{ loop.index0 }})" id="card{{ loop.index0 }}">
+            <div class="item-card" onclick="addToOrder({{ loop.index0 }}, {{ item.price }})" id="card{{ loop.index0 }}">
                 <img src="{{ item.img }}" alt="ảnh">
                 <div class="item-name">{{ item.name }}</div>
                 <div class="item-price">{{ "{:,}".format(item.price) }}đ</div>
                 <div class="qty-controls" style="display:none;" id="qtyctrl{{ loop.index0 }}">
-                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, -1)">-</button>
+                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, -1, {{ item.price }})">-</button>
                     <input type="text" class="qty-input" name="qty_{{ loop.index0 }}" id="qty{{ loop.index0 }}" value="1" readonly>
-                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, 1)">+</button>
+                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, 1, {{ item.price }})">+</button>
                 </div>
             </div>
             {% endfor %}
         </div>
+        <div class="total-bar" id="totalBar">Tổng tiền: 0đ</div>
         <button type="submit" class="top-btn" style="width:100%;font-size:19px;">Tạo đơn hàng</button>
     </form>
     <a href="/" class="top-btn">Trang chủ</a>
 </div>
 <script>
-function addToOrder(i) {
+let total = 0;
+let prices = [
+    {% for item in items %}
+        {{ item.price }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+function addToOrder(i, price) {
     let card = document.getElementById('card'+i);
     let qtyCtrl = document.getElementById('qtyctrl'+i);
     let qtyInput = document.getElementById('qty'+i);
@@ -117,8 +136,9 @@ function addToOrder(i) {
         qtyCtrl.style.display = '';
         qtyInput.value = 1;
     }
+    updateTotal();
 }
-function changeQty(i, delta) {
+function changeQty(i, delta, price) {
     let qtyInput = document.getElementById('qty'+i);
     let card = document.getElementById('card'+i);
     let qty = parseInt(qtyInput.value) || 0;
@@ -129,6 +149,15 @@ function changeQty(i, delta) {
         document.getElementById('qtyctrl'+i).style.display = 'none';
     }
     qtyInput.value = qty;
+    updateTotal();
+}
+function updateTotal() {
+    let sum = 0;
+    {% for item in items %}
+    let qty = parseInt(document.getElementById('qty{{ loop.index0 }}').value) || 0;
+    sum += qty * prices[{{ loop.index0 }}];
+    {% endfor %}
+    document.getElementById('totalBar').innerText = 'Tổng tiền: ' + sum.toLocaleString() + 'đ';
 }
 document.getElementById('orderForm').onsubmit = function() {
     let hasItem = false;

@@ -5,40 +5,98 @@
     <title>Danh sách bill</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .bill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .bill-card {
+            background: #e8f7e4;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #0002;
+            padding: 16px 14px 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .bill-time {
+            color: #219150;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .bill-total {
+            color: #e67e22;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .bill-status {
+            font-weight: 600;
+            font-size: 15px;
+            padding: 2px 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .bill-status.paid {
+            background: #d4f8e8;
+            color: #219150;
+        }
+        .bill-status.unpaid {
+            background: #ffe3e3;
+            color: #e74c3c;
+        }
+        .bill-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .bill-actions .top-btn, .bill-actions .danger-btn {
+            font-size: 15px;
+            padding: 7px 16px;
+        }
+        @media (max-width: 600px) {
+            .bill-card { padding: 12px 6px 10px 8px; }
+            .bill-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .bill-total { font-size: 16px; }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>Danh sách bill đơn hàng</h1>
     <a href="/" class="top-btn">Quay lại trang chủ</a>
-    <table>
-        <tr>
-            <th>#</th>
-            <th>Thời gian</th>
-            <th>Tổng tiền</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
+    {% if orders %}
+    <div class="bill-list">
         {% for o in orders %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ o.time }}</td>
-            <td>{{ "{:,}".format(o.total) }}đ</td>
-            <td>
-                {% if o.paid %}
-                    <span style="color:green;font-weight:bold;">Đã thanh toán</span>
-                {% else %}
-                    <span style="color:red;">Chưa thanh toán</span>
-                {% endif %}
-            </td>
-            <td>
-                <a href="/bill/{{ loop.index0 }}" class="top-btn" style="padding:4px 10px;font-size:13px;">Chi tiết</a>
-                <a href="/delete_bill/{{ loop.index0 }}" class="danger-btn" style="padding:4px 10px;font-size:13px;" onclick="return confirm('Bạn có chắc muốn xóa bill này?')">Xóa</a>
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="5" class="empty">Chưa có bill nào</td></tr>
+        <div class="bill-card">
+            <div class="bill-header">
+                <span class="bill-time">#{{ loop.index }} - {{ o.time }}</span>
+                <span class="bill-total">{{ "{:,}".format(o.total) }}đ</span>
+            </div>
+            <div>
+                <span class="bill-status {% if o.paid %}paid{% else %}unpaid{% endif %}">
+                    {% if o.paid %}Đã thanh toán{% else %}Chưa thanh toán{% endif %}
+                </span>
+            </div>
+            <div class="bill-actions">
+                <a href="/bill/{{ loop.index0 }}" class="top-btn">Chi tiết</a>
+                <a href="/delete_bill/{{ loop.index0 }}" class="danger-btn" onclick="return confirm('Bạn có chắc muốn xóa bill này?')">Xóa</a>
+            </div>
+        </div>
         {% endfor %}
-    </table>
+    </div>
+    {% else %}
+    <div class="empty">Chưa có bill nào</div>
+    {% endif %}
 </div>
 </body>
 </html>
