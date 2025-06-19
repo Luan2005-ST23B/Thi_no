@@ -117,7 +117,6 @@
     <a href="/" class="top-btn">Trang chủ</a>
 </div>
 <script>
-let total = 0;
 let prices = [
     {% for item in items %}
         {{ item.price }}{% if not loop.last %},{% endif %}
