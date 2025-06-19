@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách bill</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Danh sách bill đơn hàng</h1>
+    <a href="/" class="top-btn">Quay lại trang chủ</a>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Thời gian</th>
+            <th>Tổng tiền</th>
+            <th>Thanh toán</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        {% for o in orders %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ o.time }}</td>
+            <td>{{ "{:,}".format(o.total) }}đ</td>
+            <td>{{ o.payment }}</td>
+            <td>
+                {% if o.paid %}
+                    <span style="color:green;font-weight:bold;">Đã thanh toán</span>
+                {% else %}
+                    <span style="color:red;">Chưa thanh toán</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="/bill/{{ loop.index0 }}" class="top-btn" style="padding:4px 10px;font-size:13px;">Chi tiết</a>
+                <a href="/delete_bill/{{ loop.index0 }}" class="danger-btn" style="padding:4px 10px;font-size:13px;" onclick="return confirm('Bạn có chắc muốn xóa bill này?')">Xóa</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="empty">Chưa có bill nào</td></tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

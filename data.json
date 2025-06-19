@@ -1,0 +1,53 @@
+{
+  "items": [
+    {
+      "name": "chan gà ",
+      "price": 7000,
+      "img": "á"
+    }
+  ],
+  "orders": [
+    {
+      "order": [
+        {
+          "name": "chan gà ",
+          "price": 7000,
+          "qty": 1,
+          "img": "á"
+        }
+      ],
+      "total": 7000,
+      "time": "19/06/2025 15:32:28",
+      "payment": "Tiền mặt",
+      "paid": true
+    },
+    {
+      "order": [
+        {
+          "name": "chan gà ",
+          "price": 7000,
+          "qty": 1,
+          "img": "á"
+        }
+      ],
+      "total": 7000,
+      "time": "19/06/2025 15:34:34",
+      "payment": "Chuyển khoản",
+      "paid": true
+    },
+    {
+      "order": [
+        {
+          "name": "chan gà ",
+          "price": 7000,
+          "qty": 1,
+          "img": "á"
+        }
+      ],
+      "total": 7000,
+      "time": "19/06/2025 15:45:08",
+      "payment": "Tiền mặt",
+      "paid": true
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo đơn hàng nhanh</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .item-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .item-card {
+            background: #e8f7e4;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 10px 8px 8px 8px;
+            width: 110px;
+            text-align: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.1s;
+            position: relative;
+        }
+        .item-card.selected {
+            border: 2.5px solid #2ecc71;
+            box-shadow: 0 4px 16px #2ecc7133;
+            transform: scale(1.04);
+        }
+        .item-card img {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+        }
+        .item-card .item-name {
+            font-weight: 600;
+            color: #219150;
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+        .item-card .item-price {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        .qty-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .qty-btn {
+            background: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .qty-btn:active { background: #219150; }
+        .qty-input {
+            width: 32px;
+            text-align: center;
+            font-size: 16px;
+            border: none;
+            background: transparent;
+        }
+        @media (max-width: 600px) {
+            .item-card { width: 44vw; min-width: 100px; }
+            .item-card img { max-width: 44px; max-height: 44px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tạo đơn hàng nhanh</h1>
+    <form method="post" id="orderForm">
+        <div class="item-grid">
+            {% for item in items %}
+            <div class="item-card" onclick="addToOrder({{ loop.index0 }})" id="card{{ loop.index0 }}">
+                <img src="{{ item.img }}" alt="ảnh">
+                <div class="item-name">{{ item.name }}</div>
+                <div class="item-price">{{ "{:,}".format(item.price) }}đ</div>
+                <div class="qty-controls" style="display:none;" id="qtyctrl{{ loop.index0 }}">
+                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, -1)">-</button>
+                    <input type="text" class="qty-input" name="qty_{{ loop.index0 }}" id="qty{{ loop.index0 }}" value="1" readonly>
+                    <button type="button" class="qty-btn" onclick="event.stopPropagation(); changeQty({{ loop.index0 }}, 1)">+</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="top-btn" style="width:100%;font-size:19px;">Tạo đơn hàng</button>
+    </form>
+    <a href="/" class="top-btn">Trang chủ</a>
+</div>
+<script>
+function addToOrder(i) {
+    let card = document.getElementById('card'+i);
+    let qtyCtrl = document.getElementById('qtyctrl'+i);
+    let qtyInput = document.getElementById('qty'+i);
+    if (card.classList.contains('selected')) {
+        // Đã chọn, bỏ chọn
+        card.classList.remove('selected');
+        qtyCtrl.style.display = 'none';
+        qtyInput.value = 0;
+    } else {
+        card.classList.add('selected');
+        qtyCtrl.style.display = '';
+        qtyInput.value = 1;
+    }
+}
+function changeQty(i, delta) {
+    let qtyInput = document.getElementById('qty'+i);
+    let card = document.getElementById('card'+i);
+    let qty = parseInt(qtyInput.value) || 0;
+    qty += delta;
+    if (qty <= 0) {
+        qty = 0;
+        card.classList.remove('selected');
+        document.getElementById('qtyctrl'+i).style.display = 'none';
+    }
+    qtyInput.value = qty;
+}
+document.getElementById('orderForm').onsubmit = function() {
+    // Nếu không chọn mặt hàng nào thì không cho submit
+    let hasItem = false;
+    {% for item in items %}
+    if (parseInt(document.getElementById('qty{{ loop.index0 }}').value) > 0) hasItem = true;
+    {% endfor %}
+    if (!hasItem) {
+        alert('Hãy chọn ít nhất 1 mặt hàng!');
+        return false;
+    }
+    return true;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê bán hàng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <a href="/" class="top-btn">&larr; Trang chủ</a>
+    <h1>Thống kê bán hàng</h1>
+    <h2>Trong ngày</h2>
+    <b>Tổng tiền: {{ "{:,}".format(stats_day.total) }}đ</b>
+    <ul>
+        {% for name, qty in stats_day.sold.items() %}
+        <li>{{ name }}: {{ qty }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Trong tháng</h2>
+    <b>Tổng tiền: {{ "{:,}".format(stats_month.total) }}đ</b>
+    <ul>
+        {% for name, qty in stats_month.sold.items() %}
+        <li>{{ name }}: {{ qty }}</li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
